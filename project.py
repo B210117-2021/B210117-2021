@@ -25,8 +25,27 @@ subprocess.call('chmod 700 project.py',shell = True)
 
 ##This section is generaterd to plot the the level of protein sequence conservation across the species within that taxonomic group
 
-win_size = input("Please input a window size (note:Number of columns to average alignment quality over. The larger this value is, the smoother the plot will be. (Any integer value))\n\t")
-graph_type = input("Please type in  an output graph type you want (Options: ps, hpgl, hp7470, hp7580, meta, cps, x11, tek, tekt, none, data, xterm, svg)\n\t")
+#
+while True:
+    win_size = input("Please input a window size (note:Number of columns to average alignment quality over. The larger this value is, the smoother the plot will be. (Any integer value))\n\t")
+    try:
+        if_int = int(win_size)
+        if isinstance(if_int,int): 
+            break               
+    except ValueError:
+        print("*Man, learn to enter a integer*")
+        continue
+
+graph_type = "ps, hpgl, hp7470, hp7580, meta, cps, x11, tek, tekt, none, data, xterm, svg"
+graph_type_list = graph_type.split(', ')
+while True:
+    graph_type = input("Please type in  an output graph type you want (Options: ps, hpgl, hp7470, hp7580, meta, cps, x11, tek, tekt, none, data, xterm, svg)\n\t")
+    
+    if (graph_type in graph_type_list):
+        break
+    else:
+        print("*Please type in the right graph type*")
+        continue 
 
 command_plot = "plotcon -sequence multi_alig.fasta -winsize " + str(win_size) + " -graph " + graph_type 
 subprocess.call(command_plot,shell = True)

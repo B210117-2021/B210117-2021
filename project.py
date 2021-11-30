@@ -9,6 +9,7 @@ b = input('please enter the taxonomic group:\n\t')
 import subprocess
 subprocess.call('chmod 700 project.py',shell = True)
 
+#######################################################################################################################
 ##This section is generated to search for the desired protein and organisms from NCBI database
 
 #A default query sentence of esearch is made, and replace the default word with user input
@@ -19,13 +20,46 @@ subprocess.call('chmod 700 project.py',shell = True)
 #os.system is used to run esearch command line in py transcipt
 #os.system(command_line)
 
+#######################################################################################################################
+##This section of code is generated a report about what species are shown dataset
+
+subprocess.call("grep -E '>' sequence_required.fasta | cat >> data_review.txt",shell = True)
+print("A report of dataset is generated and based on the report, a general result is shown below")
+all_species_data = []
+
+import re
+for i in open("data_review.txt"):
+    
+    species = re.findall("\[(.*?)\]",i,re.I|re.M)
+    all_species_data = all_species_data + species
+     
+    
+species_dic = list(set(all_species_data))
+
+#List all the species
+for i in species_dic:
+    print(i,"\n")
+
+#######################################################################################################################
+##Ask users if they want to continue the program
+
+decision = input("Please make a decision if you want to continue the program [y/n]:\n\t") 
+
+if decision == 'n':
+    print("Good luck!")
+    sys.exit()
+else:
+    print("Let's continue...Next step is plotting the the level of protein sequence conservation across the species")
+
+
+#######################################################################################################################
 ##This section is generated to conduct multiple alignment among desired sequences with clustalo installed in MSc server
 
 #subprocess.call("clustalo -i sequence_required.fasta -o multi_alig.fasta",shell = True)
 
 ##This section is generaterd to plot the the level of protein sequence conservation across the species within that taxonomic group
 
-#
+#Code designed to avoid users typing in inapproperiate values
 while True:
     win_size = input("Please input a window size (note:Number of columns to average alignment quality over. The larger this value is, the smoother the plot will be. (Any integer value))\n\t")
     try:
@@ -50,5 +84,6 @@ while True:
 command_plot = "plotcon -sequence multi_alig.fasta -winsize " + str(win_size) + " -graph " + graph_type 
 subprocess.call(command_plot,shell = True)
 
+##This section 
 
 

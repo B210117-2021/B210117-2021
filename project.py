@@ -53,6 +53,28 @@ else:
 
 
 #######################################################################################################################
+##This section aims at transform multi-line of a sequence becomes a single-line.
+
+fr=open('sequence_required.fasta', 'r')  #read files
+fw=open('sigle_line_sequence.fasta', 'w')  #write files
+seq={}
+for line in fr:
+    line = line.strip()
+    if line.startswith('>'):    #判断字符串是否以‘>开始’
+        name=line.split()[0]    #以空格为分隔符。
+        seq[name]=''
+    else:
+        seq[name]+=line.replace('\n', '')
+fr.close()
+
+for i in seq.keys():
+    fw.write(i)
+    fw.write('\n')
+    fw.write(seq[i])
+    fw.write('\n')
+fr.close()
+
+#######################################################################################################################
 ##This section is generated to conduct multiple alignment among desired sequences with clustalo installed in MSc server
 
 #subprocess.call("clustalo -i sequence_required.fasta -o multi_alig.fasta",shell = True)
@@ -81,9 +103,27 @@ while True:
         print("*Please type in the right graph type*")
         continue 
 
-command_plot = "plotcon -sequence multi_alig.fasta -winsize " + str(win_size) + " -graph " + graph_type 
-subprocess.call(command_plot,shell = True)
+plot_command = "plotcon -sequence multi_alig.fasta -winsize " + str(win_size) + " -graph " + graph_type 
+subprocess.call(plot_command,shell = True)
 
-##This section 
+#######################################################################################################################
+##This section scan protein a protein sequence with motifs from the PROSITE database
+
+lines_counts  = subprocess.call("wc -l data_review.txt",shell = True) 
+
+#for i in lines_counts:
+    
+writefile_command = "patmatmotifs -sequence single_line_sequence.fasta -outfile prosite.patmatmotifs "
+subprocess.call(writefile_command,shell = True)
+
+
+
+
+
+
+
+
+
+
 
 

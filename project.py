@@ -59,9 +59,8 @@ fr=open('sequence_required.fasta', 'r')  #read files
 fw=open('sigle_line_sequence.fasta', 'w')  #write files
 seq={}
 for line in fr:
-    line = line.strip()
-    if line.startswith('>'):    #判断字符串是否以‘>开始’
-        name=line.split()[0]    #以空格为分隔符。
+    if line.startswith('>'): 
+        name=" ".join(line.split()[:])   
         seq[name]=''
     else:
         seq[name]+=line.replace('\n', '')
@@ -72,7 +71,17 @@ for i in seq.keys():
     fw.write('\n')
     fw.write(seq[i])
     fw.write('\n')
-fr.close()
+fw.close()
+del(seq)
+
+decision = input("Please make a decision if you want to continue the program [y/n]:\n\t")
+
+if decision == 'n':
+    print("Good luck!")
+    sys.exit()
+else:
+    print("Let's continue...Next step is plotting the the level of protein sequence conservation across the species")
+
 
 #######################################################################################################################
 ##This section is generated to conduct multiple alignment among desired sequences with clustalo installed in MSc server

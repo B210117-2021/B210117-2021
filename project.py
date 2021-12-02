@@ -56,7 +56,7 @@ else:
 ##This section aims at transform multi-line of a sequence becomes a single-line.
 
 fr=open('sequence_required.fasta', 'r')  #read files
-fw=open('sigle_line_sequence.fasta', 'w')  #write files
+fw=open('single_line_sequence.fasta', 'w')  #write files
 seq={}
 for line in fr:
     if line.startswith('>'): 
@@ -72,16 +72,7 @@ for i in seq.keys():
     fw.write(seq[i])
     fw.write('\n')
 fw.close()
-del(seq)
-
-decision = input("Please make a decision if you want to continue the program [y/n]:\n\t")
-
-if decision == 'n':
-    print("Good luck!")
-    sys.exit()
-else:
-    print("Let's continue...Next step is plotting the the level of protein sequence conservation across the species")
-
+del(line)
 
 #######################################################################################################################
 ##This section is generated to conduct multiple alignment among desired sequences with clustalo installed in MSc server
@@ -118,15 +109,42 @@ subprocess.call(plot_command,shell = True)
 #######################################################################################################################
 ##This section scan protein a protein sequence with motifs from the PROSITE database
 
-lines_counts  = subprocess.call("wc -l data_review.txt",shell = True) 
+scan_result = open("scan_result.txt",'w')
+sequence = open('single_line_sequence.fasta','r')
+length = int(len(sequence.readlines())/2)
+print(length)
+sequence.close()
 
-#for i in lines_counts:
+for i in range(length):
+    scan = open("scan.fasta",'w')
+    scan.write(list(seq.keys())[i-1])
+    scan.write("\n")
+    scan.write(list(seq.values())[i-1])
+    scan.close()    
     
-writefile_command = "patmatmotifs -sequence single_line_sequence.fasta -outfile prosite.patmatmotifs "
-subprocess.call(writefile_command,shell = True)
+    writefile_command = "patmatmotifs -sequence scan.fasta -outfile prosite.patmatmotifs "
+    subprocess.call(writefile_command,shell = True)
 
+    get_screen=subprocess.Popen("grep 'HitCount' prosite.patmatmotifs",shell=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
+    output,err_msg=get_screen.communicate()
+    hitcount = output.decode('gb2312').rstrip()
+    
+    if hitcount == '# HitCount: 0':
+        continue
+    else:
+        get = subprocess.Popen("grep 'Motif = ' prosite.patmatmotifs",shell=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
+        out,err_msg=get.communicate()
+        motif = out.decode('gb2312').rstrip()
+        
+        scan_result.write(list(seq.keys())[i-1])
+        scan_result.write("\n")
+        scan_result.write(motif)
+        scan_result.write("\n")
+    open('scan.fasta', 'w').close()
+    
+scan_result.close()
 
-
+    
 
 
 

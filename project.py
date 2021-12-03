@@ -146,9 +146,12 @@ for i in range(length):
         scan_result.write(motif)
         scan_result.write("\n")
     open('scan.fasta', 'w').close()
+analysis_data.close()
+subprocess.call("pepstats -sequence analysis_data.fasta -outfile analysis_result.pepstats",shell = True)
+
     
 scan_result.close()
-analysis_data.close()
+open("analysis_data.fasta",'w').close()
 
 
 

@@ -114,6 +114,7 @@ sequence = open('single_line_sequence.fasta','r')
 length = int(len(sequence.readlines())/2)
 print(length)
 sequence.close()
+analysis_data = open("analysis_data.fasta",'w')
 
 for i in range(length):
     scan = open("scan.fasta",'w')
@@ -136,6 +137,10 @@ for i in range(length):
         out,err_msg=get.communicate()
         motif = out.decode('gb2312').rstrip()
         
+        analysis_data.write(list(seq.keys())[i-1])
+        analysis_data.write("\n") 
+        analysis_data.write(list(seq.values())[i-1])
+        analysis_data.write("\n")
         scan_result.write(list(seq.keys())[i-1])
         scan_result.write("\n")
         scan_result.write(motif)
@@ -143,8 +148,7 @@ for i in range(length):
     open('scan.fasta', 'w').close()
     
 scan_result.close()
-
-    
+analysis_data.close()
 
 
 
